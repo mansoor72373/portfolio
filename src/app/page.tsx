@@ -3,7 +3,7 @@ import Hero from "./components/Hero";
 import Skills from "./components/Skills";
 import Projects from "./components/Projects";
 import Footer from "./components/Footer";
-import { Box, Text, Link } from "@chakra-ui/react";
+import { Box } from "@chakra-ui/react";
 import About from "./components/About";
 import Contact from "./components/Contact";
 

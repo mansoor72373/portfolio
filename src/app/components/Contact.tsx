@@ -4,11 +4,9 @@ import {
   Heading,
   Text,
   VStack,
-  HStack,
   Input,
   Textarea,
   Button,
-  Icon,
   useColorModeValue,
   FormControl,
   FormLabel,
@@ -66,10 +64,14 @@ const Contact = () => {
       } else {
         throw new Error(data.message || "Failed to send message.");
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
+      let errorMessage = "Failed to send message.";
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
       toast({
         title: "Error",
-        description: error.message || "Failed to send message.",
+        description: errorMessage,
         status: "error",
         duration: 5000,
         isClosable: true,
@@ -96,8 +98,8 @@ const Contact = () => {
           Contact Us
         </Heading>
         <Text color={textColor} fontSize={{ base: "md", md: "lg" }}>
-          We'd love to hear from you! Please fill out the form below or reach us
-          through our contact information.
+          We&apos;d love to hear from you! Please fill out the form below or
+          reach us through our contact information.
         </Text>
       </VStack>
 
@@ -179,6 +181,7 @@ const Contact = () => {
             height={"550px"}
             borderRadius={"20px"}
             src={ContacUsImage.src}
+            alt="Contact Us"
           />
         </VStack>
       </Flex>

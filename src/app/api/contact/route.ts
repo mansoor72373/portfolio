@@ -31,10 +31,14 @@ export async function POST(req: NextRequest) {
       success: true,
       message: "Message sent successfully.",
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error sending email:", error);
+    let errorMessage = "Failed to send message.";
+    if (error instanceof Error) {
+      errorMessage = error.message;
+    }
     return NextResponse.json(
-      { success: false, message: error?.message || "Failed to send message." },
+      { success: false, message: errorMessage },
       { status: 500 }
     );
   }

@@ -65,7 +65,7 @@ const About = () => {
               Passionate about crafting modern web experiences.
             </Text>
             <Text color={textColor} fontSize={{ base: "sm", md: "md" }}>
-              Hi, I'm{" "}
+              Hi, I&apos;m{" "}
               <Text as="span" fontWeight="bold" color={accentColor}>
                 Mansoor Ahmad
               </Text>

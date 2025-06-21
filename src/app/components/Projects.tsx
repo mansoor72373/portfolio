@@ -13,14 +13,11 @@ import {
   HStack,
   useColorModeValue,
   Badge,
-  LinkBox,
-  LinkOverlay,
   SimpleGrid,
-  Icon,
 } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 import { useState } from "react";
-import { FaGithub, FaExternalLinkAlt, FaCode } from "react-icons/fa";
+import { FaGithub, FaExternalLinkAlt } from "react-icons/fa";
 
 // Enhanced project data with more details
 const projects = [
@@ -62,15 +59,161 @@ const categories = [
 ];
 
 const MotionBox = motion(Box);
-const MotionFlex = motion(Flex);
+
+interface Project {
+  id: number;
+  title: string;
+  description: string;
+  longDescription: string;
+  image: string;
+  tags: string[];
+  category: string;
+  demoLink: string;
+  githubLink: string;
+  featured: boolean;
+}
+
+interface ProjectCardProps {
+  project: Project;
+  index: number;
+  expandedProject: number | null;
+  onToggle: (id: number) => void;
+}
+
+const ProjectCard = ({
+  project,
+  index,
+  expandedProject,
+  onToggle,
+}: ProjectCardProps) => {
+  const bgColor = useColorModeValue("white", "gray.800");
+  const buttonHoverBg = useColorModeValue("gray.100", "gray.700");
+  const textColor = useColorModeValue("gray.600", "gray.400");
+  return (
+    <MotionBox
+      key={project.id}
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, delay: index * 0.1 }}
+      whileHover={{ y: -5 }}
+      overflow="hidden"
+      borderRadius="lg"
+      boxShadow="md"
+      bg={bgColor}
+      position="relative"
+      w="100%"
+      minW="0"
+    >
+      {project.featured && (
+        <Badge
+          position="absolute"
+          top={3}
+          right={3}
+          colorScheme="purple"
+          zIndex={1}
+          borderRadius="full"
+          px={2}
+          py={0.5}
+        >
+          Featured
+        </Badge>
+      )}
+
+      <Box position="relative" h="180px" overflow="hidden">
+        <Image
+          src={project.image}
+          alt={project.title}
+          objectFit="cover"
+          w="full"
+          h="full"
+          transition="transform 0.5s"
+          _groupHover={{ transform: "scale(1.05)" }}
+        />
+        <Box
+          position="absolute"
+          top={0}
+          left={0}
+          right={0}
+          bottom={0}
+          bg="blackAlpha.600"
+          opacity={0}
+          transition="opacity 0.3s"
+          _groupHover={{ opacity: 1 }}
+        />
+      </Box>
+
+      <VStack p={4} align="start" spacing={3}>
+        <Heading as="h3" size="md">
+          {project.title}
+        </Heading>
+
+        <Text fontSize="sm" color={textColor}>
+          {expandedProject === project.id
+            ? project.longDescription
+            : project.description}
+        </Text>
+
+        <Button
+          variant="link"
+          colorScheme="teal"
+          size="sm"
+          onClick={() => onToggle(project.id)}
+        >
+          {expandedProject === project.id ? "Show Less" : "Show More"}
+        </Button>
+
+        <HStack wrap="wrap" spacing={2} pt={2}>
+          {project.tags.map((tag) => (
+            <Tag
+              key={tag}
+              size="sm"
+              variant="subtle"
+              colorScheme="cyan"
+              borderRadius="full"
+            >
+              <TagLabel>{tag}</TagLabel>
+            </Tag>
+          ))}
+        </HStack>
+      </VStack>
+
+      <Flex
+        justify="space-between"
+        align="center"
+        p={4}
+        borderTopWidth="1px"
+        borderColor={useColorModeValue("gray.200", "gray.700")}
+      >
+        <Button
+          as="a"
+          href={project.githubLink}
+          target="_blank"
+          variant="ghost"
+          leftIcon={<FaGithub />}
+          size="sm"
+          _hover={{ bg: buttonHoverBg }}
+        >
+          GitHub
+        </Button>
+        <Button
+          as="a"
+          href={project.demoLink}
+          target="_blank"
+          variant="ghost"
+          leftIcon={<FaExternalLinkAlt />}
+          size="sm"
+          _hover={{ bg: buttonHoverBg }}
+        >
+          Demo
+        </Button>
+      </Flex>
+    </MotionBox>
+  );
+};
 
 const Projects = () => {
   const [activeCategory, setActiveCategory] = useState("All");
   const [expandedProject, setExpandedProject] = useState<number | null>(null);
-
-  const bgColor = useColorModeValue("white", "gray.800");
-  const borderColor = useColorModeValue("gray.200", "gray.700");
-  const hoverBg = useColorModeValue("teal.50", "teal.700");
 
   const filteredProjects =
     activeCategory === "All"
@@ -156,122 +299,13 @@ const Projects = () => {
             }}
           >
             {filteredProjects.map((project, index) => (
-              <MotionBox
+              <ProjectCard
                 key={project.id}
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                whileHover={{ y: -5 }}
-                overflow="hidden"
-                borderRadius="lg"
-                boxShadow="md"
-                bg={bgColor}
-                position="relative"
-                w="100%"
-                minW="0"
-              >
-                {project.featured && (
-                  <Badge
-                    position="absolute"
-                    top={3}
-                    right={3}
-                    colorScheme="purple"
-                    zIndex={1}
-                    borderRadius="full"
-                    px={2}
-                    py={0.5}
-                  >
-                    Featured
-                  </Badge>
-                )}
-
-                <Box position="relative" h="180px" overflow="hidden">
-                  <Image
-                    src={project.image}
-                    alt={project.title}
-                    objectFit="cover"
-                    w="full"
-                    h="full"
-                    transition="transform 0.5s"
-                    _groupHover={{ transform: "scale(1.05)" }}
-                  />
-                  <Box
-                    position="absolute"
-                    top={0}
-                    left={0}
-                    right={0}
-                    bottom={0}
-                    bg="blackAlpha.600"
-                    opacity={0}
-                    transition="opacity 0.3s"
-                    _groupHover={{ opacity: 1 }}
-                  />
-                </Box>
-
-                <VStack p={4} align="start" spacing={3}>
-                  <Heading as="h3" size="md">
-                    {project.title}
-                  </Heading>
-
-                  <Text
-                    fontSize="sm"
-                    color={useColorModeValue("gray.600", "gray.400")}
-                  >
-                    {expandedProject === project.id
-                      ? project.longDescription
-                      : project.description}
-                  </Text>
-
-                  <Button
-                    variant="link"
-                    colorScheme="teal"
-                    size="sm"
-                    onClick={() => toggleProjectExpansion(project.id)}
-                  >
-                    {expandedProject === project.id ? "Show less" : "Read more"}
-                  </Button>
-
-                  <HStack spacing={2} flexWrap="wrap">
-                    {project.tags.map((tag) => (
-                      <Tag
-                        key={tag}
-                        size="sm"
-                        borderRadius="full"
-                        colorScheme="blue"
-                        variant="subtle"
-                        my={1}
-                      >
-                        <TagLabel>{tag}</TagLabel>
-                      </Tag>
-                    ))}
-                  </HStack>
-
-                  <HStack spacing={3} pt={2}>
-                    <Button
-                      as="a"
-                      href={project.demoLink}
-                      target="_blank"
-                      size="sm"
-                      colorScheme="teal"
-                      leftIcon={<Icon as={FaExternalLinkAlt} />}
-                      borderRadius="full"
-                    >
-                      Live Demo
-                    </Button>
-                    <Button
-                      as="a"
-                      href={project.githubLink}
-                      target="_blank"
-                      size="sm"
-                      leftIcon={<Icon as={FaGithub} />}
-                      variant="outline"
-                      borderRadius="full"
-                    >
-                      Code
-                    </Button>
-                  </HStack>
-                </VStack>
-              </MotionBox>
+                project={project}
+                index={index}
+                expandedProject={expandedProject}
+                onToggle={toggleProjectExpansion}
+              />
             ))}
           </SimpleGrid>
         </VStack>

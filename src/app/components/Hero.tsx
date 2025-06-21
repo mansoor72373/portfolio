@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  Box,
   Heading,
   Text,
   Button,
@@ -46,7 +45,7 @@ const Hero = () => {
               fontWeight="bold"
               color={headingColor}
             >
-              Let's Work
+              Let&apos;s Work
             </Heading>
             <Heading
               lineHeight={0.75}
@@ -75,7 +74,7 @@ const Hero = () => {
             </Text>
             <Flex gap={4} justify={{ base: "center", md: "flex-start" }}>
               <Button colorScheme="teal" size="lg" px={8}>
-                Let's Talk
+                Let&apos;s Talk
               </Button>
               <Button variant="outline" colorScheme="teal" size="lg" px={8}>
                 Start Project
